@@ -5,10 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.io.File;
+import java.sql.SQLException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -17,21 +16,34 @@ public class RemindersActivity extends AppCompatActivity {
 
     @Bind(R.id.lv_reminders)
     ListView lvReminders;
+    private ReminderDbAdapter reminderDbAdapter;
+    private RemindersSimpleCursorAdapter remindersSimpleCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminders);
         ButterKnife.bind(this);
-        File file = new File(getFilesDir(), "a.jpg");
-        if (!file.exists()) {
-            file.mkdir();
+        lvReminders.setDivider(null);
+        reminderDbAdapter = new ReminderDbAdapter(this);
+        try {
+            reminderDbAdapter.activate();
+            if (savedInstanceState != null) {
+                reminderDbAdapter.deleteAllReminders();
+                insertSomeReminders();
+                remindersSimpleCursorAdapter = new RemindersSimpleCursorAdapter(this, R.id.lv_reminders, reminderDbAdapter.fetchAllReminders(), null, null, 0);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        lvReminders.setAdapter(new ArrayAdapter<String>(this,R.layout.reminders_row,R.id.row_text,new String[]{"first record","second record","third record"}));
-        System.out.println("fileList:"+fileList().length);
-        for (String s : fileList()) {
-            Log.d(TAG, "onOptionsItemSelected: "+s);
-        }
+    }
+
+    private void insertSomeReminders() {
+        reminderDbAdapter.createReminder("购买AndroidStudio实战",true);
+        reminderDbAdapter.createReminder("准备元旦节红包准备金",true);
+        reminderDbAdapter.createReminder("与覃俊杰共进晚餐",false);
+        reminderDbAdapter.createReminder("预备Perl语言学习计划",true);
+        reminderDbAdapter.createReminder("预备Python语言学习计划",true);
     }
 
     @Override
