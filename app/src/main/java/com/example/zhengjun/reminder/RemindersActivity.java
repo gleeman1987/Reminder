@@ -77,9 +77,9 @@ public class RemindersActivity extends AppCompatActivity {
     private void insertSomeReminders() {
         reminderDbAdapter.createReminder("购买AndroidStudio实战", true);
         reminderDbAdapter.createReminder("准备元旦节红包准备金", true);
-        reminderDbAdapter.createReminder("与覃俊杰共进晚餐", false);
         reminderDbAdapter.createReminder("预备Perl语言学习计划", true);
-        reminderDbAdapter.createReminder("预备Python语言学习计划", true);
+        reminderDbAdapter.createReminder("预备Python语言学习计划", false);
+        reminderDbAdapter.createReminder("预备正则表达式学习计划", true);
     }
 
     @Override
